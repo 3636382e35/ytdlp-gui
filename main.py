@@ -3,7 +3,7 @@
 import yt_dlp
 import sys
 
-import qdarkstyle
+# import qdarkstyle
 
 # import qtmodern.styles
 # import qtmodern.windows
@@ -160,17 +160,17 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    # file = open("./Darkeum.qss",'r')
-    # with file:
-    #     qss = file.read()
-    #     app.setStyleSheet(qss)
+    file = open("./gruvbox_theme.qss",'r')
+    with file:
+        qss = file.read()
+        app.setStyleSheet(qss)
 
     window = MainWindow()
     window.show()
 
 
     # for qtdark
-    app.setStyleSheet(qdarkstyle.load_stylesheet())
+    # app.setStyleSheet(qdarkstyle.load_stylesheet())
 
     # for qtmodern
     # qtmodern.styles.dark(app)
