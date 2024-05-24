@@ -33,10 +33,18 @@
 @neutral_orange: #d65d0e;
 
 /* Main Window */
+QWidget {
+  background-color: #ebdbb2;
+}
+
 QMainWindow {
-    background-color: #282828;
+
+    border: 3px solid #665c54;
+    background-color: #665c54;
     color: #ebdbb2;
 }
+
+
 
 /* Buttons */
 QPushButton {
@@ -48,12 +56,25 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background-color: #3c3836;
-}
+              background-color: #3c3836;
+            }
 
 QPushButton:pressed {
-    background-color: #665c54;
+              background-color: #665c54;
+            }
+
+/* TextEdit */
+
+QTextEdit {
+    background-color: #282828;
+    color: #ebdbb2;
+    border: 1px solid #504945;
+    padding: 2px;
+    border-radius: 2px;
 }
+
+
+
 
 /* Labels */
 QLabel {

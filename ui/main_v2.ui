@@ -212,6 +212,13 @@
            </property>
           </widget>
          </item>
+         <item row="3" column="0">
+          <widget class="QCheckBox" name="yt_search_chkbx">
+           <property name="text">
+            <string>ytsearch?</string>
+           </property>
+          </widget>
+         </item>
          <item row="1" column="1">
           <widget class="QRadioButton" name="format_video_Rbtn">
            <property name="font">
@@ -227,18 +234,11 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QComboBox" name="comboBox_2"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QCheckBox" name="yt_search_chkbx">
-           <property name="text">
-            <string>ytsearch?</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="1">
           <widget class="QComboBox" name="comboBox_3"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QComboBox" name="comboBox_2"/>
          </item>
         </layout>
        </widget>
