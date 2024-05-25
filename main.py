@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+#1
+
 import yt_dlp
 import sys
 
@@ -20,7 +22,6 @@ class YoutubeDownload(QThread):
 
     progress = pyqtSignal(int)
     message = pyqtSignal(str, str)  # Format and message
-    
 
 
     def __init__(self, url, ydl_opts, *args, **kwargs):
@@ -28,6 +29,7 @@ class YoutubeDownload(QThread):
         self.url = url
         self.ydl_opts = MainWindow.ydl_opts
         
+
 
     def run(self):
         def my_hook(d):
@@ -53,12 +55,14 @@ class YoutubeDownload(QThread):
                     '<span style="color:red;">{}</span>', 
                     f"Error: {str(e)}"
                 )
+
+
                 
     def stop(self):
         self.terminate()
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, QThread):
 
     ydl_opts = {
         'quiet': False,
@@ -88,6 +92,16 @@ class MainWindow(QMainWindow):
                     'preferredcodec': 'm4a',
                 }]
         }))
+
+        self.format_video_Rbtn.toggled.connect(
+            lambda: self.ydl_opts.update({
+                'format': 'bestvideo/best'})
+        )
+
+        self.clear_edit_txt_btn.clicked.connect(self.textEdit.clear)
+        self.ydl_opts_btn.clicked.connect(self.check_ydl_opts)
+        self.start_download_button.clicked.connect(self.onEditingFinished)
+        self.check_url_button.clicked.connect(self.on_check_url_click)
 
         self.yt_search_chkbx.stateChanged.connect(
             lambda: self.ydl_opts.update({
