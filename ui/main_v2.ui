@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>602</width>
+    <width>326</width>
     <height>605</height>
    </rect>
   </property>
@@ -30,7 +30,7 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
@@ -59,21 +59,6 @@
         </property>
         <property name="placeholderText">
          <string>input complete URL or ID</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="check_url_button">
-        <property name="font">
-         <font>
-          <family>JetBrainsMonoNL NFM</family>
-          <pointsize>8</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Check URL</string>
         </property>
        </widget>
       </item>
@@ -154,13 +139,6 @@
      </layout>
     </item>
     <item>
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <property name="spacing">
        <number>10</number>
@@ -168,11 +146,17 @@
       <property name="leftMargin">
        <number>10</number>
       </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
       <property name="rightMargin">
        <number>10</number>
       </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QRadioButton" name="format_video_Rbtn">
         <property name="font">
          <font>
           <family>JetBrainsMonoNL NFM</family>
@@ -181,76 +165,96 @@
           <bold>true</bold>
          </font>
         </property>
-        <property name="title">
-         <string>Format</string>
+        <property name="text">
+         <string>Video</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
-          <number>15</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>15</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <property name="spacing">
-          <number>10</number>
-         </property>
-         <item row="2" column="0">
-          <widget class="QRadioButton" name="format_audio_Rbtn">
-           <property name="font">
-            <font>
-             <family>JetBrainsMonoNL NFM</family>
-             <pointsize>8</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Audio</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QCheckBox" name="yt_search_chkbx">
-           <property name="text">
-            <string>ytsearch?</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QRadioButton" name="format_video_Rbtn">
-           <property name="font">
-            <font>
-             <family>JetBrainsMonoNL NFM</family>
-             <pointsize>8</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Video</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QComboBox" name="comboBox_3"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QComboBox" name="comboBox_2"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QToolButton" name="toolButton">
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="format_audio_Rbtn">
+        <property name="font">
+         <font>
+          <family>JetBrainsMonoNL NFM</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Audio</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="yt_search_chkbx">
+        <property name="text">
+         <string>ytsearch?</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="lineWidth">
+         <number>0</number>
+        </property>
+        <property name="text">
+         <string>Output Directory</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="file_path_label">
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="toolButton">
+        <property name="text">
+         <string>...</string>
+        </property>
        </widget>
       </item>
      </layout>

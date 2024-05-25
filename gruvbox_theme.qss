@@ -32,15 +32,16 @@
 @neutral_aqua: #689d6a;
 @neutral_orange: #d65d0e;
 
+
+
 /* Main Window */
 QWidget {
   background-color: #ebdbb2;
 }
 
 QMainWindow {
-
     border: 3px solid #665c54;
-    background-color: #665c54;
+    background-color: #1d2021;
     color: #ebdbb2;
 }
 
@@ -50,17 +51,16 @@ QMainWindow {
 QPushButton {
     background-color: #504945;
     color: #ebdbb2;
-    border: 1px solid #665c54;
     padding: 5px;
     border-radius: 2px;
 }
 
 QPushButton:hover {
-              background-color: #3c3836;
+              background-color: #a89984;
             }
 
 QPushButton:pressed {
-              background-color: #665c54;
+              background-color: #7c6f64;
             }
 
 /* TextEdit */
@@ -210,12 +210,14 @@ QToolTip {
 QProgressBar {
     border: 1px solid #504945;
     background-color: #282828;
-    color: #ebdbb2;
     border-radius: 2px;
+    color: #ebdbb2;
     text-align: center;
 }
 
+
 QProgressBar::chunk {
+    color: #282828;
     background-color: #b8bb26;
 }
 

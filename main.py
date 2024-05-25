@@ -12,11 +12,9 @@ import sys
 
 from MyLogger import MyLogger
 
-from PyQt5.QtCore import pyqtSignal, QThread
-from PyQt5.QtGui import QTextCursor, QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5 import uic, QtCore, QtGui
-
+from PyQt5.QtCore import pyqtSignal, QThread, QDir
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5 import uic
 
 class YoutubeDownload(QThread):
 
@@ -29,22 +27,20 @@ class YoutubeDownload(QThread):
         self.url = url
         self.ydl_opts = MainWindow.ydl_opts
         
-
-
     def run(self):
         def my_hook(d):
             if d['status'] == 'downloading' and d.get('total_bytes'):
                 progress = int(d['downloaded_bytes'] / d['total_bytes'] * 100)
-                print(progress)
+                
                 self.progress.emit(progress)
             if d['status'] == 'finished':
                 self.message.emit(
-                    '<span style="color:green;">{}</span>', 
+                    '<span style="color:#b8bb26;">{}</span>', 
                     "Download completed successfully."
                 )
 
         self.ydl_opts['progress_hooks'] = [my_hook]
-
+        
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             try:
                 ydl.download([self.url])
@@ -54,8 +50,6 @@ class YoutubeDownload(QThread):
                     '<span style="color:red;">{}</span>', 
                     f"Error: {str(e)}"
                 )
-
-
                 
     def stop(self):
         self.terminate()
@@ -69,7 +63,6 @@ class MainWindow(QMainWindow):
         'progress_hooks': [],
         'outtmpl': None,
         'logger': None,
-        'paths' : None,
         'format': None,
         'nocheckcertificate' : True,
         'geobypass': True,
@@ -79,6 +72,12 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('./ui/main_v2.ui', self)
+
+        #default output directory
+        self.curr_dir = QDir.currentPath()
+        self.file_path_label.setText(self.curr_dir)
+        self.ydl_opts.update({'outtmpl': self.curr_dir + '/%(title)s.%(ext)s'})
+        self.file_dialog = QFileDialog(self)
 
         self.errorFormat = '<span style="color:#fb4934;">{}</span>'
         self.warningFormat = '<span style="color:#fabd2f;">{}</span>'
@@ -103,6 +102,8 @@ class MainWindow(QMainWindow):
         self.ydl_opts_btn.clicked.connect(self.check_ydl_opts)
         self.start_download_button.clicked.connect(self.onEditingFinished)
         self.check_url_button.clicked.connect(self.on_check_url_click)
+        self.toolButton.clicked.connect(self.show_file_dialog)
+
 
         self.yt_search_chkbx.stateChanged.connect(
             lambda: self.ydl_opts.update({
@@ -111,15 +112,20 @@ class MainWindow(QMainWindow):
         )
 
 
+    def show_file_dialog(self):
+        file_path= self.file_dialog.getExistingDirectory(self, "Select Directory") 
+        if file_path:
+            self.file_path_label.setText(file_path)
+            self.ydl_opts.update({'outtmpl': file_path + '/%(title)s.%(ext)s'})
 
     def on_check_url_click(self):
         url = self.url_line_edit.text()
-        logger = MyLogger()
+        # logger = MyLogger()
 
-        if self.is_valid_url(url, logger):
-            self.textEdit.append(self.validFormat.format("'"+url+"' is a valid URL."))
-        else:
-            self.textEdit.append(self.errorFormat.format("'"+url+"' is not a valid URL."))
+        # if self.is_valid_url(url, logger):
+        #     self.textEdit.append(self.validFormat.format("'"+url+"' is a valid URL."))
+        # else:
+        #     self.textEdit.append(self.errorFormat.format("'"+url+"' is not a valid URL."))
 
 
 
@@ -127,15 +133,15 @@ class MainWindow(QMainWindow):
         url = self.url_line_edit.text()
         logger = MyLogger()
 
-        if self.is_valid_url(url, logger):
-            logger.messageSignal.connect(self.textEdit.append)
-            self.ydl_opts.update({'logger': logger})
-            self.thread = YoutubeDownload(url, self.ydl_opts)
-            self.thread.progress.connect(self.update_progress)
-            self.thread.message.connect(self.display_message)
-            self.thread.start()
-        else:
-            self.textEdit.append(self.errorFormat.format("Cannot download invalid URL."))
+        # if self.is_valid_url(url, logger):
+        logger.messageSignal.connect(self.textEdit.append)
+        self.ydl_opts.update({'logger': logger})
+        self.thread = YoutubeDownload(url, self.ydl_opts)
+        self.thread.progress.connect(self.update_progress)
+        self.thread.message.connect(self.display_message)
+        self.thread.start()
+        # else:
+        #     self.textEdit.append(self.errorFormat.format("Cannot download invalid URL."))
 
 
 
