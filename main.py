@@ -101,7 +101,7 @@ class MainWindow(QMainWindow):
         self.clear_edit_txt_btn.clicked.connect(self.textEdit.clear)
         self.ydl_opts_btn.clicked.connect(self.check_ydl_opts)
         self.start_download_button.clicked.connect(self.onEditingFinished)
-        self.check_url_button.clicked.connect(self.on_check_url_click)
+        # self.check_url_button.clicked.connect(self.on_check_url_click)
         self.toolButton.clicked.connect(self.show_file_dialog)
 
 
