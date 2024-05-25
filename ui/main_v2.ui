@@ -26,6 +26,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
@@ -197,7 +200,7 @@
          <property name="spacing">
           <number>10</number>
          </property>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QRadioButton" name="format_audio_Rbtn">
            <property name="font">
             <font>
@@ -212,14 +215,14 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QCheckBox" name="yt_search_chkbx">
            <property name="text">
             <string>ytsearch?</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="2" column="1">
           <widget class="QRadioButton" name="format_video_Rbtn">
            <property name="font">
             <font>
@@ -234,11 +237,18 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QComboBox" name="comboBox_3"/>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QComboBox" name="comboBox_2"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QToolButton" name="toolButton">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

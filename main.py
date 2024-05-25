@@ -42,7 +42,6 @@ class YoutubeDownload(QThread):
                     '<span style="color:green;">{}</span>', 
                     "Download completed successfully."
                 )
-                MainWindow.update_progress(0)
 
         self.ydl_opts['progress_hooks'] = [my_hook]
 
@@ -62,7 +61,7 @@ class YoutubeDownload(QThread):
         self.terminate()
 
 
-class MainWindow(QMainWindow, QThread):
+class MainWindow(QMainWindow):
 
     ydl_opts = {
         'quiet': False,
@@ -70,6 +69,7 @@ class MainWindow(QMainWindow, QThread):
         'progress_hooks': [],
         'outtmpl': None,
         'logger': None,
+        'paths' : None,
         'format': None,
         'nocheckcertificate' : True,
         'geobypass': True,
@@ -83,6 +83,7 @@ class MainWindow(QMainWindow, QThread):
         self.errorFormat = '<span style="color:#fb4934;">{}</span>'
         self.warningFormat = '<span style="color:#fabd2f;">{}</span>'
         self.validFormat = '<span style="color:#b8bb26;">{}</span>'
+        self.normalFormat = '<span style="color:#;">{}</span>'
 
         # buttons
         self.format_audio_Rbtn.toggled.connect(lambda: self.ydl_opts.update({
