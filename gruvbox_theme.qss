@@ -218,7 +218,7 @@ QProgressBar {
 
 QProgressBar::chunk {
     color: #282828;
-    background-color: #b8bb26;
+    background-color: #98971a;
 }
 
 /* Tabs */
