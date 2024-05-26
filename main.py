@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-#1
-
 import yt_dlp
 import sys
 
@@ -11,7 +9,6 @@ import sys
 # import qtmodern.windows
 
 from MyLogger import MyLogger
-
 from PyQt5.QtCore import pyqtSignal, QThread, QDir
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt5 import uic
@@ -77,7 +74,7 @@ class MainWindow(QMainWindow):
         self.curr_dir = QDir.currentPath()
         self.file_path_label.setText(self.curr_dir)
         self.ydl_opts.update({'outtmpl': self.curr_dir + '/%(title)s.%(ext)s'})
-        self.file_dialog = QFileDialog(self)
+        self.file_dialog = QFileDialog(self, options=QFileDialog.DontUseNativeDialog)
 
         self.errorFormat = '<span style="color:#fb4934;">{}</span>'
         self.warningFormat = '<span style="color:#fabd2f;">{}</span>'
@@ -162,19 +159,13 @@ class MainWindow(QMainWindow):
             except Exception:
                 return False
 
-
-
     def check_ydl_opts(self):
         self.textEdit.append("\n".join("{}\t{}".format(k, v) for k, v in self.ydl_opts.items()))
-
-
 
     def update_progress(self, value):
         self.progressBar.setValue(value)
         if self.progressBar.value == 100:
             self.progressBar.setValue(0)
-
-
         
     def display_message(self, format_str, message):
         self.textEdit.append(format_str.format(message))
@@ -184,7 +175,7 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    file = open("./gruvbox_theme.qss",'r')
+    file = open("./config/themes/gruvbox_theme.qss",'r')
     with file:
         qss = file.read()
         app.setStyleSheet(qss)

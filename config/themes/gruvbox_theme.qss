@@ -48,18 +48,18 @@ QMainWindow {
 
 
 /* Buttons */
-QPushButton {
+QPushButton, QToolButton {
     background-color: #504945;
     color: #ebdbb2;
     padding: 5px;
     border-radius: 2px;
 }
 
-QPushButton:hover {
+QPushButton:hover, QToolButton:hover {
               background-color: #a89984;
             }
 
-QPushButton:pressed {
+QPushButton:pressed, QToolButton:pressed {
               background-color: #7c6f64;
             }
 
@@ -263,3 +263,15 @@ QCheckBox::indicator:unchecked, QRadioButton::indicator:unchecked {
     background-color: #504945;
 }
 
+QFileDialog {
+  background-color : #1d2021;
+  color : #1d2021;
+  border: 1px solid #504945;
+}
+
+
+QTableView , QListView, QColumnView, QTableWidget, QTreeWidget, QListWidget , QScrollArea {
+  background-color: #282828;
+  color : #ebdbb2;
+  border: 1px solid #504945;
+}
