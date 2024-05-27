@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
-import yt_dlp
-import sys
-
-# import qdarkstyle
 
 # import qtmodern.styles
 # import qtmodern.windows
 
+import yt_dlp, sys, toml
 from MyLogger import MyLogger
 from PyQt5.QtCore import pyqtSignal, QThread, QDir
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
@@ -71,8 +68,13 @@ class MainWindow(QMainWindow):
         uic.loadUi('./ui/main_v2.ui', self)
 
         #default output directory
-        self.curr_dir = QDir.currentPath()
+        # self.curr_dir = QDir.currentPath()
+        with open('./config/config.toml', 'r') as f:
+            config = toml.load(f)
+
+        self.curr_dir = config['directory']['output']
         self.file_path_label.setText(self.curr_dir)
+
         self.ydl_opts.update({'outtmpl': self.curr_dir + '/%(title)s.%(ext)s'})
         self.file_dialog = QFileDialog(self, options=QFileDialog.DontUseNativeDialog)
 
@@ -112,6 +114,11 @@ class MainWindow(QMainWindow):
     def show_file_dialog(self):
         file_path= self.file_dialog.getExistingDirectory(self, "Select Directory") 
         if file_path:
+            with open('./config/config.toml', 'r') as f:
+                config = toml.load(f)
+            config['directory']['output'] = file_path 
+            with open('./config/config.toml', 'w') as f: 
+                toml.dump(config, f)
             self.file_path_label.setText(file_path)
             self.ydl_opts.update({'outtmpl': file_path + '/%(title)s.%(ext)s'})
 
