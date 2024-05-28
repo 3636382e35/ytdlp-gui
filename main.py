@@ -4,17 +4,20 @@
 # import qtmodern.styles
 # import qtmodern.windows
 
-import yt_dlp, sys, toml, os, urllib
+import yt_dlp, sys, toml, os, urllib, requests
+from PIL import Image
+from io import BytesIO
 from MyLogger import MyLogger
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtCore import pyqtSignal, QThread, QDir
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QLabel
+from PyQt5.QtGui import QPixmap, QIcon, QImage
+from PyQt5.QtCore import pyqtSignal, QThread, QDir, Qt
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QMainWindow, QFileDialog, QLabel, QWidget, QSizePolicy
 from PyQt5 import uic
 
 class YoutubeDownload(QThread):
 
     progress = pyqtSignal(int)
     message = pyqtSignal(str, str)  # Format and message
+    thumbnailFetched = pyqtSignal(QPixmap)
 
 
     def __init__(self, url, ydl_opts, *args, **kwargs):
@@ -23,6 +26,14 @@ class YoutubeDownload(QThread):
         self.ydl_opts = ydl_opts
         
     def run(self):
+
+        video_id = self.extract_video_id(self.url)
+
+        if video_id:
+            thumbnail_url = f'https://img.youtube.com/vi/{video_id}/hqdefault.jpg'
+            print(thumbnail_url)
+            self.fetch_thumbnail(thumbnail_url)
+
         def my_hook(d):
             if d['status'] == 'downloading' and d.get('total_bytes'):
                 progress = int(d['downloaded_bytes'] / d['total_bytes'] * 100)
@@ -41,12 +52,6 @@ class YoutubeDownload(QThread):
         
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             try:
-                #get thumbnail from extract_info
-
-                thumbnail = ydl.extract_info(self.url, download=False)['thumbnail']
-                pixmap = QPixmap(thumbnail)
-                self.thumbnail_label.setPixmap(pixmap)
-
                 # print((ydl.extract_info(self.url, download=False)))
                 ydl.download([self.url])
 
@@ -59,6 +64,41 @@ class YoutubeDownload(QThread):
                 
     def stop(self):
         self.terminate()
+
+    def extract_video_id(self, url):
+        if "youtube.com/watch?v=" in url:
+            return url.split("v=")[-1]
+        elif "youtu.be/" in url:
+            return url.split("/")[-1]
+        else:
+            return None
+
+    def fetch_thumbnail(self, thumbnail_url):
+        try:
+            response = requests.get(thumbnail_url)
+            if response.status_code == 200:
+                image_data = response.content
+                image = Image.open(BytesIO(image_data))
+                image = image.convert("RGBA")  # Ensure image has alpha channel
+
+                # Convert PIL Image to QImage
+                qimage = QImage(image.tobytes(), image.width, image.height, QImage.Format_RGBA8888)
+
+                # Convert QImage to QPixmap and emit it
+                pixmap = QPixmap.fromImage(qimage)
+                self.thumbnailFetched.emit(pixmap)
+            else:
+                self.message.emit(
+                    '<span style="color:red;">{}</span>', 
+                    "Failed to fetch thumbnail"
+                )
+        except Exception as e:
+            print(e)
+            self.message.emit(
+                '<span style="color:red;">{}</span>', 
+                f"Error fetching thumbnail: {str(e)}"
+            )
+
 
 
 class MainWindow(QMainWindow):
@@ -80,6 +120,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi('./ui/main_v2.ui', self)
 
+        self.original_pixmap = None
         #default output directory
         # self.curr_dir = QDir.currentPath()
         with open('./config/config.toml', 'r') as f:
@@ -115,7 +156,15 @@ class MainWindow(QMainWindow):
         self.start_download_button.clicked.connect(self.onEditingFinished)
         # self.check_url_button.clicked.connect(self.on_check_url_click)
         self.toolButton.clicked.connect(self.show_file_dialog)
-        self.thumbnail_label = QLabel()
+
+        # adding widget programatically
+
+        self.thumbnail_label = QLabel(self)
+        # self.thumbnail_label.setScaledContents(True)
+        # self.thumbnail_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.central_widget = self.centralWidget()
+        self.central_widget.layout().addWidget(self.thumbnail_label)  # Add the label to the central widget.
+        self.thumbnail_label.setText("Thumbnail")
 
 
         self.yt_search_chkbx.stateChanged.connect(
@@ -123,7 +172,30 @@ class MainWindow(QMainWindow):
                 'yt_search': self.yt_search_chkbx.isChecked()
             })
         )
+   
 
+
+    # TODO: Fix rescalable image thumbnail based on window size
+
+    def display_thumbnail(self, pixmap):
+        self.original_pixmap = pixmap
+        self.update_thumbnail_label()
+
+    def resizeEvent(self, event):
+        self.update_thumbnail_label()
+        super().resizeEvent(event)
+
+    def update_thumbnail_label(self):
+        if self.original_pixmap:
+            scaled_pixmap = self.original_pixmap.scaled(
+                self.thumbnail_label.size(), 
+                Qt.KeepAspectRatio, 
+                Qt.SmoothTransformation
+            )
+            self.thumbnail_label.setPixmap(scaled_pixmap)
+
+    # def display_thumbnail(self, pixmap):
+    #     self.thumbnail_label.setPixmap(pixmap)
 
     def show_file_dialog(self):
         file_path= self.file_dialog.getExistingDirectory(self, "Select Directory") 
@@ -136,8 +208,8 @@ class MainWindow(QMainWindow):
             self.file_path_label.setText(file_path)
             self.ydl_opts.update({'outtmpl': file_path + '/%(title)s.%(ext)s'})
 
-    def on_check_url_click(self):
-        url = self.url_line_edit.text()
+    # def on_check_url_click(self):
+    #     url = self.url_line_edit.text()
         # logger = MyLogger()
 
         # if self.is_valid_url(url, logger):
@@ -158,6 +230,7 @@ class MainWindow(QMainWindow):
         self.thread = YoutubeDownload(url, self.ydl_opts)
         self.thread.progress.connect(self.update_progress)
         self.thread.message.connect(self.display_message)
+        self.thread.thumbnailFetched.connect(self.display_thumbnail)
         self.thread.start()
         # else:
         #     self.textEdit.append(self.errorFormat.format("Cannot download invalid URL."))
