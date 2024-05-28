@@ -4,10 +4,11 @@
 # import qtmodern.styles
 # import qtmodern.windows
 
-import yt_dlp, sys, toml
+import yt_dlp, sys, toml, os, urllib
 from MyLogger import MyLogger
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import pyqtSignal, QThread, QDir
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QLabel
 from PyQt5 import uic
 
 class YoutubeDownload(QThread):
@@ -19,25 +20,36 @@ class YoutubeDownload(QThread):
     def __init__(self, url, ydl_opts, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.url = url
-        self.ydl_opts = MainWindow.ydl_opts
+        self.ydl_opts = ydl_opts
         
     def run(self):
         def my_hook(d):
             if d['status'] == 'downloading' and d.get('total_bytes'):
                 progress = int(d['downloaded_bytes'] / d['total_bytes'] * 100)
-                
                 self.progress.emit(progress)
+
             if d['status'] == 'finished':
                 self.message.emit(
                     '<span style="color:#b8bb26;">{}</span>', 
                     "Download completed successfully."
                 )
 
+            with open('./logs.txt', 'w') as log:
+                log.write(str(d))
+          
         self.ydl_opts['progress_hooks'] = [my_hook]
         
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             try:
+                #get thumbnail from extract_info
+
+                thumbnail = ydl.extract_info(self.url, download=False)['thumbnail']
+                pixmap = QPixmap(thumbnail)
+                self.thumbnail_label.setPixmap(pixmap)
+
+                # print((ydl.extract_info(self.url, download=False)))
                 ydl.download([self.url])
+
                 # self.message.emit('<span style="color:green;">{}</span>', "Download completed successfully.")
             except Exception as e:
                 self.message.emit(
@@ -53,6 +65,7 @@ class MainWindow(QMainWindow):
 
     ydl_opts = {
         'quiet': False,
+        'verbose': True,
         'yt_search': False,
         'progress_hooks': [],
         'outtmpl': None,
@@ -102,6 +115,7 @@ class MainWindow(QMainWindow):
         self.start_download_button.clicked.connect(self.onEditingFinished)
         # self.check_url_button.clicked.connect(self.on_check_url_click)
         self.toolButton.clicked.connect(self.show_file_dialog)
+        self.thumbnail_label = QLabel()
 
 
         self.yt_search_chkbx.stateChanged.connect(
@@ -140,6 +154,7 @@ class MainWindow(QMainWindow):
         # if self.is_valid_url(url, logger):
         logger.messageSignal.connect(self.textEdit.append)
         self.ydl_opts.update({'logger': logger})
+
         self.thread = YoutubeDownload(url, self.ydl_opts)
         self.thread.progress.connect(self.update_progress)
         self.thread.message.connect(self.display_message)
@@ -153,12 +168,14 @@ class MainWindow(QMainWindow):
         self.ydl_opts.update({
             'quiet': True,
             'logger': logger,
+            
             # 'listformats' : True
         })
 
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             try:
                 ydl.extract_info(url, download=False)
+
                 # self.ydl_opts.update({
                 #     'listformats' : False
                 # }) 
