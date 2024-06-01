@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 # import qtmodern.styles
 # import qtmodern.windows
 
@@ -9,8 +8,8 @@ from PIL import Image
 from io import BytesIO
 from MyLogger import MyLogger
 from PyQt5.QtGui import QPixmap, QIcon, QImage
-from PyQt5.QtCore import pyqtSignal, QThread, QDir, Qt
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QMainWindow, QFileDialog, QLabel, QWidget, QSizePolicy
+from PyQt5.QtCore import pyqtSignal, QThread, QDir
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QMainWindow, QFileDialog, QLabel, QWidget
 from PyQt5 import uic
 
 class YoutubeDownload(QThread):
@@ -120,13 +119,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi('./ui/main_v2.ui', self)
 
-        self.original_pixmap = None
         #default output directory
         # self.curr_dir = QDir.currentPath()
         with open('./config/config.toml', 'r') as f:
             config = toml.load(f)
 
-        self.curr_dir = config['directory']['output']
+        self.curr_dir = config['output']['directory']
         self.file_path_label.setText(self.curr_dir)
 
         self.ydl_opts.update({'outtmpl': self.curr_dir + '/%(title)s.%(ext)s'})
@@ -158,51 +156,26 @@ class MainWindow(QMainWindow):
         self.toolButton.clicked.connect(self.show_file_dialog)
 
         # adding widget programatically
-
         self.thumbnail_label = QLabel(self)
-        # self.thumbnail_label.setScaledContents(True)
-        # self.thumbnail_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.central_widget = self.centralWidget()
         self.central_widget.layout().addWidget(self.thumbnail_label)  # Add the label to the central widget.
-        self.thumbnail_label.setText("Thumbnail")
-
 
         self.yt_search_chkbx.stateChanged.connect(
             lambda: self.ydl_opts.update({
                 'yt_search': self.yt_search_chkbx.isChecked()
             })
         )
-   
-
-
-    # TODO: Fix rescalable image thumbnail based on window size
+    
 
     def display_thumbnail(self, pixmap):
-        self.original_pixmap = pixmap
-        self.update_thumbnail_label()
-
-    def resizeEvent(self, event):
-        self.update_thumbnail_label()
-        super().resizeEvent(event)
-
-    def update_thumbnail_label(self):
-        if self.original_pixmap:
-            scaled_pixmap = self.original_pixmap.scaled(
-                self.thumbnail_label.size(), 
-                Qt.KeepAspectRatio, 
-                Qt.SmoothTransformation
-            )
-            self.thumbnail_label.setPixmap(scaled_pixmap)
-
-    # def display_thumbnail(self, pixmap):
-    #     self.thumbnail_label.setPixmap(pixmap)
+        self.thumbnail_label.setPixmap(pixmap)
 
     def show_file_dialog(self):
         file_path= self.file_dialog.getExistingDirectory(self, "Select Directory") 
         if file_path:
             with open('./config/config.toml', 'r') as f:
                 config = toml.load(f)
-            config['directory']['output'] = file_path 
+            config['output']['directory'] = file_path 
             with open('./config/config.toml', 'w') as f: 
                 toml.dump(config, f)
             self.file_path_label.setText(file_path)
@@ -211,7 +184,6 @@ class MainWindow(QMainWindow):
     # def on_check_url_click(self):
     #     url = self.url_line_edit.text()
         # logger = MyLogger()
-
         # if self.is_valid_url(url, logger):
         #     self.textEdit.append(self.validFormat.format("'"+url+"' is a valid URL."))
         # else:
@@ -272,7 +244,8 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    file = open("./config/themes/gruvbox_theme.qss",'r')
+    config = toml.load('./config/config.toml')
+    file = open('./config/' + config['themes']['directory'], 'r')
     with file:
         qss = file.read()
         app.setStyleSheet(qss)

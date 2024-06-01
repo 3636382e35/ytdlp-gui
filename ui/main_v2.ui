@@ -96,13 +96,6 @@
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="thumbnail_label">
-      <property name="text">
-       <string>image</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="spacing">
        <number>10</number>

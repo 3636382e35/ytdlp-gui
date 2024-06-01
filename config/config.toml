@@ -1,5 +1,5 @@
-[directory]
-output = ""
+[output]
+directory = "/home/noodlesoup/Music"
 
 [themes]
-theme = "./themes/gruvbox_theme.qss"
+directory = "./themes/gruvbox_theme.qss"
