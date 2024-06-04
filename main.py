@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# import qtmodern.styles
-# import qtmodern.windows
-
 import yt_dlp, sys, toml, os, urllib, requests
 from PIL import Image
 from io import BytesIO
@@ -11,6 +8,7 @@ from PyQt5.QtGui import QPixmap, QIcon, QImage
 from PyQt5.QtCore import pyqtSignal, QThread, QDir
 from PyQt5.QtWidgets import QApplication, QVBoxLayout, QMainWindow, QFileDialog, QLabel, QWidget
 from PyQt5 import uic
+
 
 class YoutubeDownload(QThread):
 
@@ -24,6 +22,7 @@ class YoutubeDownload(QThread):
         self.url = url
         self.ydl_opts = ydl_opts
         
+
     def run(self):
 
         video_id = self.extract_video_id(self.url)
@@ -61,14 +60,17 @@ class YoutubeDownload(QThread):
                     f"Error: {str(e)}"
                 )
                 
+
     def stop(self):
         self.terminate()
 
     def extract_video_id(self, url):
         if "youtube.com/watch?v=" in url:
             return url.split("v=")[-1]
+
         elif "youtu.be/" in url:
             return url.split("/")[-1]
+
         else:
             return None
 
@@ -86,19 +88,19 @@ class YoutubeDownload(QThread):
                 # Convert QImage to QPixmap and emit it
                 pixmap = QPixmap.fromImage(qimage)
                 self.thumbnailFetched.emit(pixmap)
+
             else:
                 self.message.emit(
                     '<span style="color:red;">{}</span>', 
                     "Failed to fetch thumbnail"
                 )
+
         except Exception as e:
             print(e)
             self.message.emit(
                 '<span style="color:red;">{}</span>', 
                 f"Error fetching thumbnail: {str(e)}"
             )
-
-
 
 class MainWindow(QMainWindow):
 
@@ -170,6 +172,7 @@ class MainWindow(QMainWindow):
     def display_thumbnail(self, pixmap):
         self.thumbnail_label.setPixmap(pixmap)
 
+
     def show_file_dialog(self):
         file_path= self.file_dialog.getExistingDirectory(self, "Select Directory") 
         if file_path:
@@ -180,6 +183,7 @@ class MainWindow(QMainWindow):
                 toml.dump(config, f)
             self.file_path_label.setText(file_path)
             self.ydl_opts.update({'outtmpl': file_path + '/%(title)s.%(ext)s'})
+
 
     # def on_check_url_click(self):
     #     url = self.url_line_edit.text()
@@ -261,6 +265,7 @@ if __name__ == "__main__":
     # qtmodern.styles.dark(app)
     # mw = qtmodern.windows.ModernWindow(window)
     # mw.show()
+
 
 
     sys.exit(app.exec_())
