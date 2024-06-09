@@ -5,9 +5,15 @@ from PIL import Image
 from io import BytesIO
 from MyLogger import MyLogger
 from PyQt5.QtGui import QPixmap, QIcon, QImage
-from PyQt5.QtCore import pyqtSignal, QThread, QDir
+from PyQt5.QtCore import pyqtSignal, QThread, QDir, QSettings
 from PyQt5.QtWidgets import QApplication, QVBoxLayout, QMainWindow, QFileDialog, QLabel, QWidget
 from PyQt5 import uic
+
+# exec on exit
+def appExec(window):
+    app = QApplication(sys.argv)
+    app.exec_()
+    window.write_settings()
 
 
 class YoutubeDownload(QThread):
@@ -37,11 +43,11 @@ class YoutubeDownload(QThread):
                 progress = int(d['downloaded_bytes'] / d['total_bytes'] * 100)
                 self.progress.emit(progress)
 
-            if d['status'] == 'finished':
-                self.message.emit(
-                    '<span style="color:#b8bb26;">{}</span>', 
-                    "Download completed successfully."
-                )
+            # if d['status'] == 'finished':
+            #     self.message.emit(
+            #         '<span style="color:#b8bb26;">{}</span>', 
+            #         "Download completed successfully."
+            #     )
 
             with open('./logs.txt', 'w') as log:
                 log.write(str(d))
@@ -52,8 +58,7 @@ class YoutubeDownload(QThread):
             try:
                 # print((ydl.extract_info(self.url, download=False)))
                 ydl.download([self.url])
-
-                # self.message.emit('<span style="color:green;">{}</span>', "Download completed successfully.")
+                self.message.emit('<span style="color:#b8bb26;">{}</span>', "Download completed successfully.")
             except Exception as e:
                 self.message.emit(
                     '<span style="color:red;">{}</span>', 
@@ -121,8 +126,6 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi('./ui/main_v2.ui', self)
 
-        #default output directory
-        # self.curr_dir = QDir.currentPath()
         with open('./config/config.toml', 'r') as f:
             config = toml.load(f)
 
@@ -154,7 +157,6 @@ class MainWindow(QMainWindow):
         self.clear_edit_txt_btn.clicked.connect(self.textEdit.clear)
         self.ydl_opts_btn.clicked.connect(self.check_ydl_opts)
         self.start_download_button.clicked.connect(self.onEditingFinished)
-        # self.check_url_button.clicked.connect(self.on_check_url_click)
         self.toolButton.clicked.connect(self.show_file_dialog)
 
         # adding widget programatically
@@ -170,6 +172,7 @@ class MainWindow(QMainWindow):
     
 
     def display_thumbnail(self, pixmap):
+        self.thumbnail_label.setVisible(False)
         self.thumbnail_label.setPixmap(pixmap)
 
 
@@ -185,52 +188,27 @@ class MainWindow(QMainWindow):
             self.ydl_opts.update({'outtmpl': file_path + '/%(title)s.%(ext)s'})
 
 
-    # def on_check_url_click(self):
-    #     url = self.url_line_edit.text()
-        # logger = MyLogger()
-        # if self.is_valid_url(url, logger):
-        #     self.textEdit.append(self.validFormat.format("'"+url+"' is a valid URL."))
-        # else:
-        #     self.textEdit.append(self.errorFormat.format("'"+url+"' is not a valid URL."))
-
+    def check_button_flags(self):
+        return self.format_audio_Rbtn.isChecked() or self.format_video_Rbtn.isChecked()
 
 
     def onEditingFinished(self):
-        url = self.url_line_edit.text()
-        logger = MyLogger()
+        if self.check_button_flags():
+            url = self.url_line_edit.text()
+            logger = MyLogger()
 
-        # if self.is_valid_url(url, logger):
-        logger.messageSignal.connect(self.textEdit.append)
-        self.ydl_opts.update({'logger': logger})
+            logger.messageSignal.connect(self.textEdit.append)
+            self.ydl_opts.update({'logger': logger})
 
-        self.thread = YoutubeDownload(url, self.ydl_opts)
-        self.thread.progress.connect(self.update_progress)
-        self.thread.message.connect(self.display_message)
-        self.thread.thumbnailFetched.connect(self.display_thumbnail)
-        self.thread.start()
-        # else:
-        #     self.textEdit.append(self.errorFormat.format("Cannot download invalid URL."))
-
+            self.thread = YoutubeDownload(url, self.ydl_opts)
+            self.thread.progress.connect(self.update_progress)
+            self.thread.message.connect(self.display_message)
+            self.thread.thumbnailFetched.connect(self.display_thumbnail)
+            self.thread.start()
+        else:
+            self.textEdit.append(self.warningFormat.format("Please select format."))
 
 
-    def is_valid_url(self, url, logger):
-        self.ydl_opts.update({
-            'quiet': True,
-            'logger': logger,
-            
-            # 'listformats' : True
-        })
-
-        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
-            try:
-                ydl.extract_info(url, download=False)
-
-                # self.ydl_opts.update({
-                #     'listformats' : False
-                # }) 
-                return True
-            except Exception:
-                return False
 
     def check_ydl_opts(self):
         self.textEdit.append("\n".join("{}\t{}".format(k, v) for k, v in self.ydl_opts.items()))
@@ -242,6 +220,33 @@ class MainWindow(QMainWindow):
         
     def display_message(self, format_str, message):
         self.textEdit.append(format_str.format(message))
+
+    def read_settings(self):
+        settings = QSettings("./config/config.ini", QSettings.IniFormat)
+
+        audio_btn_state = settings.value("audio_btn_state", False, type=bool)
+        video_btn_state = settings.value("video_btn_state", False, type=bool)
+        yt_search_chkbx_state = settings.value("yt_search_chkbx_state", False, type=bool)
+        
+        self.format_audio_Rbtn.setChecked(audio_btn_state)
+        self.format_video_Rbtn.setChecked(video_btn_state)
+        self.yt_search_chkbx.setChecked(yt_search_chkbx_state)
+
+        pos = settings.value("pos", self.pos())
+        size = settings.value("size", self.size())
+        self.move(pos)
+        self.resize(size)
+
+
+    def write_settings(self):
+        settings = QSettings("./config/config.ini", QSettings.IniFormat)
+        #to boolean
+        settings.setValue("audio_btn_state", self.format_audio_Rbtn.isChecked())
+        settings.setValue("video_btn_state", self.format_video_Rbtn.isChecked())
+        settings.setValue("yt_search_chkbx_state", self.yt_search_chkbx.isChecked())
+        settings.setValue("pos", self.pos())
+        settings.setValue("size", self.size())
+
 
 
 
@@ -256,17 +261,7 @@ if __name__ == "__main__":
 
     window = MainWindow()
     window.show()
+    window.read_settings()
 
-
-    # for qtdark
-    # app.setStyleSheet(qdarkstyle.load_stylesheet())
-
-    # for qtmodern
-    # qtmodern.styles.dark(app)
-    # mw = qtmodern.windows.ModernWindow(window)
-    # mw.show()
-
-
-
-    sys.exit(app.exec_())
+    sys.exit(appExec(window))
 
