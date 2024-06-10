@@ -21,12 +21,14 @@ class YoutubeDownload(QThread):
     progress = pyqtSignal(int)
     message = pyqtSignal(str, str)  # Format and message
     thumbnailFetched = pyqtSignal(QPixmap)
+    clear_thumbnail = pyqtSignal()
 
 
-    def __init__(self, url, ydl_opts, *args, **kwargs):
+    def __init__(self, url, ydl_opts, window, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.url = url
         self.ydl_opts = ydl_opts
+        self.main_window = window 
         
 
     def run(self):
@@ -42,6 +44,7 @@ class YoutubeDownload(QThread):
             if d['status'] == 'downloading' and d.get('total_bytes'):
                 progress = int(d['downloaded_bytes'] / d['total_bytes'] * 100)
                 self.progress.emit(progress)
+ 
 
             # if d['status'] == 'finished':
             #     self.message.emit(
@@ -56,10 +59,15 @@ class YoutubeDownload(QThread):
         
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             try:
-                # print((ydl.extract_info(self.url, download=False)))
                 ydl.download([self.url])
-                self.message.emit('<span style="color:#b8bb26;">{}</span>', "Download completed successfully.")
+                self.message.emit('<span style="color:#b8bb26;">{}</span>',
+                                  "Download completed successfully."
+                )
+                self.main_window.progressBar.setValue(0)
+                self.clear_thumbnail.emit()  # Emit the signal when progress is 0
+                
             except Exception as e:
+
                 self.message.emit(
                     '<span style="color:red;">{}</span>', 
                     f"Error: {str(e)}"
@@ -68,6 +76,7 @@ class YoutubeDownload(QThread):
 
     def stop(self):
         self.terminate()
+
 
     def extract_video_id(self, url):
         if "youtube.com/watch?v=" in url:
@@ -79,6 +88,7 @@ class YoutubeDownload(QThread):
         else:
             return None
 
+
     def fetch_thumbnail(self, thumbnail_url):
         try:
             response = requests.get(thumbnail_url)
@@ -86,11 +96,7 @@ class YoutubeDownload(QThread):
                 image_data = response.content
                 image = Image.open(BytesIO(image_data))
                 image = image.convert("RGBA")  # Ensure image has alpha channel
-
-                # Convert PIL Image to QImage
                 qimage = QImage(image.tobytes(), image.width, image.height, QImage.Format_RGBA8888)
-
-                # Convert QImage to QPixmap and emit it
                 pixmap = QPixmap.fromImage(qimage)
                 self.thumbnailFetched.emit(pixmap)
 
@@ -106,6 +112,7 @@ class YoutubeDownload(QThread):
                 '<span style="color:red;">{}</span>', 
                 f"Error fetching thumbnail: {str(e)}"
             )
+
 
 class MainWindow(QMainWindow):
 
@@ -162,7 +169,9 @@ class MainWindow(QMainWindow):
         # adding widget programatically
         self.thumbnail_label = QLabel(self)
         self.central_widget = self.centralWidget()
-        self.central_widget.layout().addWidget(self.thumbnail_label)  # Add the label to the central widget.
+        self.central_widget.layout().addWidget(self.thumbnail_label)  
+        self.thumbnail_label.setContentsMargins(10, 6, 10, 6)
+        
 
         self.yt_search_chkbx.stateChanged.connect(
             lambda: self.ydl_opts.update({
@@ -172,7 +181,7 @@ class MainWindow(QMainWindow):
     
 
     def display_thumbnail(self, pixmap):
-        self.thumbnail_label.setVisible(False)
+        # self.thumbnail_label.setVisible(False)
         self.thumbnail_label.setPixmap(pixmap)
 
 
@@ -194,32 +203,38 @@ class MainWindow(QMainWindow):
 
     def onEditingFinished(self):
         if self.check_button_flags():
+
             url = self.url_line_edit.text()
             logger = MyLogger()
 
             logger.messageSignal.connect(self.textEdit.append)
             self.ydl_opts.update({'logger': logger})
 
-            self.thread = YoutubeDownload(url, self.ydl_opts)
+            self.thread = YoutubeDownload(url, self.ydl_opts, self)
             self.thread.progress.connect(self.update_progress)
             self.thread.message.connect(self.display_message)
             self.thread.thumbnailFetched.connect(self.display_thumbnail)
+            self.thread.clear_thumbnail.connect(self.clear_thumbnail_label)
             self.thread.start()
         else:
             self.textEdit.append(self.warningFormat.format("Please select format."))
 
-
+    def clear_thumbnail_label(self):
+        self.thumbnail_label.clear()
 
     def check_ydl_opts(self):
         self.textEdit.append("\n".join("{}\t{}".format(k, v) for k, v in self.ydl_opts.items()))
+
 
     def update_progress(self, value):
         self.progressBar.setValue(value)
         if self.progressBar.value == 100:
             self.progressBar.setValue(0)
+
         
     def display_message(self, format_str, message):
         self.textEdit.append(format_str.format(message))
+
 
     def read_settings(self):
         settings = QSettings("./config/config.ini", QSettings.IniFormat)
@@ -246,8 +261,6 @@ class MainWindow(QMainWindow):
         settings.setValue("yt_search_chkbx_state", self.yt_search_chkbx.isChecked())
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
-
-
 
 
 if __name__ == "__main__":
