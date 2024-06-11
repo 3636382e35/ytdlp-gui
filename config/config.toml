@@ -2,4 +2,4 @@
 directory = "/home/noodlesoup/Music"
 
 [themes]
-directory = "./themes/gruvbox_theme.qss"
+directory = "./themes/one_dark.qss"
