@@ -2,11 +2,10 @@
 
 import sys, toml, os, urllib
 from YoutubeDownload import YoutubeDownload
-from io import BytesIO
 from MyLogger import MyLogger
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QDir, QSettings 
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QMainWindow, QFileDialog, QLabel, QWidget
+from PyQt5.QtWidgets import QApplication,QGridLayout, QVBoxLayout, QMainWindow, QFileDialog, QLabel, QWidget
 from PyQt5 import uic, QtCore
 
 # exec on exit
@@ -50,11 +49,12 @@ class MainWindow(QMainWindow):
 
         # buttons
         self.format_audio_Rbtn.toggled.connect(lambda: self.ydl_opts.update({
-                'format': 'm4a/bestaudio/best',
-                'postprocessors': [{  # Extract audio using ffmpeg
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'm4a',
-                }]
+                'format': 
+                    'm4a/bestaudio/best',
+                    'postprocessors': [{  # Extract audio using ffmpeg
+                    '   key': 'FFmpegExtractAudio',
+                        'preferredcodec': 'm4a',
+                    }]
         }))
 
         self.format_video_Rbtn.toggled.connect(
@@ -67,24 +67,18 @@ class MainWindow(QMainWindow):
         self.start_download_button.clicked.connect(self.onEditingFinished)
         self.toolButton.clicked.connect(self.show_file_dialog)
 
-        # adding widget programatically
-        self.thumbnail_label = QLabel(self)
-        self.central_widget = self.centralWidget()
-        self.central_widget.layout().addWidget(self.thumbnail_label)  
-        self.thumbnail_label.setContentsMargins(10, 6, 10, 6)
-        
 
         self.yt_search_chkbx.stateChanged.connect(
             lambda: self.ydl_opts.update({
                 'yt_search': self.yt_search_chkbx.isChecked()
             })
         )
-    
 
-    def display_thumbnail(self, pixmap):
+    def display_thumbnail(self, pixmap, title, duration):
         # self.thumbnail_label.setVisible(False)
         self.thumbnail_label.setPixmap(pixmap)
-
+        self.title_label.setText(f"Title: {title}")
+        self.duration_label.setText(f"Duration: {duration}")
 
     def show_file_dialog(self):
         file_path= self.file_dialog.getExistingDirectory(self, "Select Directory") 
@@ -103,6 +97,7 @@ class MainWindow(QMainWindow):
 
 
     def onEditingFinished(self):
+
         if self.check_button_flags():
 
             url = self.url_line_edit.text()
@@ -115,23 +110,30 @@ class MainWindow(QMainWindow):
             self.thread.progress.connect(self.update_progress)
             self.thread.message.connect(self.display_message)
             self.thread.thumbnailFetched.connect(self.display_thumbnail)
+            self.thread.clear_console_log.connect(self.clear_console_log)
             self.thread.clear_thumbnail.connect(self.clear_thumbnail_label)
             self.thread.start()
+
         else:
             self.textEdit.append(self.warningFormat.format("Please select format."))
 
+
     def clear_thumbnail_label(self):
         self.thumbnail_label.clear()
+        self.title_label.clear()
+        self.duration_label.clear()
+        self.adjustSize()
 
     def check_ydl_opts(self):
         self.textEdit.append("\n".join("{}\t{}".format(k, v) for k, v in self.ydl_opts.items()))
-
 
     def update_progress(self, value):
         self.progressBar.setValue(value)
         if self.progressBar.value == 100:
             self.progressBar.setValue(0)
 
+    def clear_console_log(self):
+        self.textEdit.clear()
         
     def display_message(self, format_str, message):
         self.textEdit.append(format_str.format(message))

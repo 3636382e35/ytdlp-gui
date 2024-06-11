@@ -9,7 +9,8 @@ class YoutubeDownload(QThread):
 
     progress = pyqtSignal(int)
     message = pyqtSignal(str, str)  # Format and message
-    thumbnailFetched = pyqtSignal(QPixmap)
+    thumbnailFetched = pyqtSignal(QPixmap, str, str)
+    clear_console_log = pyqtSignal()
     clear_thumbnail = pyqtSignal()
 
 
@@ -22,18 +23,20 @@ class YoutubeDownload(QThread):
 
     def run(self):
 
-        video_id = self.extract_video_id(self.url)
+        video_info = self.get_video_info(self.url)
 
-        if video_id:
+        if video_info:
+            video_id = video_info.get("id")
             thumbnail_url = f'https://img.youtube.com/vi/{video_id}/hqdefault.jpg'
-            print(thumbnail_url)
-            self.fetch_thumbnail(thumbnail_url)
+            title = video_info.get("title")
+            duration = video_info.get("duration")
+
+            self.fetch_thumbnail(thumbnail_url, title, duration)
 
         def my_hook(d):
             if d['status'] == 'downloading' and d.get('total_bytes'):
                 progress = int(d['downloaded_bytes'] / d['total_bytes'] * 100)
                 self.progress.emit(progress)
- 
 
             # if d['status'] == 'finished':
             #     self.message.emit(
@@ -44,11 +47,13 @@ class YoutubeDownload(QThread):
             with open('./logs.txt', 'w') as log:
                 log.write(str(d))
           
+
         self.ydl_opts['progress_hooks'] = [my_hook]
         
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             try:
                 ydl.download([self.url])
+                self.clear_console_log.emit()
                 self.message.emit('<span style="color:#b8bb26;">{}</span>',
                                   "Download completed successfully."
                 )
@@ -77,8 +82,27 @@ class YoutubeDownload(QThread):
         else:
             return None
 
+    def get_video_info(self, url):
+        ydl_opts = {'quiet': True}
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            try:
+                info_dict = ydl.extract_info(url, download=False)
+                video_info = {
+                    "id": info_dict.get("id"),
+                    "title": info_dict.get("title"),
+                    "duration": self.format_duration(info_dict.get("duration"))
+                }
+                return video_info
+            except Exception as e:
+                self.message.emit('<span style="color:red;">{}</span>', f"Error fetching video info: {str(e)}")
+                return None
 
-    def fetch_thumbnail(self, thumbnail_url):
+    def format_duration(self, seconds):
+        m, s = divmod(seconds, 60)
+        h, m = divmod(m, 60)
+        return f"{h:02d}:{m:02d}:{s:02d}"
+
+    def fetch_thumbnail(self, thumbnail_url, title, duration):
         try:
             response = requests.get(thumbnail_url)
             if response.status_code == 200:
@@ -88,7 +112,7 @@ class YoutubeDownload(QThread):
                 qimage = QImage(image.tobytes(), image.width, image.height, QImage.Format_RGBA8888)
                 pixmap = QPixmap.fromImage(qimage)
                 pixmap = pixmap.scaled(128, 128, QtCore.Qt.KeepAspectRatio)
-                self.thumbnailFetched.emit(pixmap)
+                self.thumbnailFetched.emit(pixmap, title, duration)
 
             else:
                 self.message.emit(
