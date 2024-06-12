@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
  
-class MyLogger(QtCore.QObject):
+class Logger(QtCore.QObject):
  
     messageSignal = QtCore.pyqtSignal(str)
     def debug(self, msg):

@@ -8,7 +8,7 @@ from io import BytesIO
 class YoutubeDownload(QThread):
 
     progress = pyqtSignal(int)
-    message = pyqtSignal(str, str)  # Format and message
+    message = pyqtSignal(str, str)
     thumbnailFetched = pyqtSignal(QPixmap, str, str)
     clear_console_log = pyqtSignal()
     clear_thumbnail = pyqtSignal()
@@ -43,14 +43,11 @@ class YoutubeDownload(QThread):
             #         '<span style="color:#b8bb26;">{}</span>', 
             #         "Download completed successfully."
             #     )
-
-            with open('./logs.txt', 'w') as log:
-                log.write(str(d))
-          
+         
 
         self.ydl_opts['progress_hooks'] = [my_hook]
         
-        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(self.ydl_opts,) as ydl:
             try:
                 ydl.download([self.url])
                 self.clear_console_log.emit()
@@ -66,7 +63,6 @@ class YoutubeDownload(QThread):
                     '<span style="color:red;">{}</span>', 
                     f"Error: {str(e)}"
                 )
-                
 
     def stop(self):
         self.terminate()
@@ -108,7 +104,7 @@ class YoutubeDownload(QThread):
             if response.status_code == 200:
                 image_data = response.content
                 image = Image.open(BytesIO(image_data))
-                image = image.convert("RGBA")  # Ensure image has alpha channel
+                image = image.convert("RGBA") 
                 qimage = QImage(image.tobytes(), image.width, image.height, QImage.Format_RGBA8888)
                 pixmap = QPixmap.fromImage(qimage)
                 pixmap = pixmap.scaled(128, 128, QtCore.Qt.KeepAspectRatio)

@@ -2,13 +2,14 @@
 
 import sys, toml, os, urllib
 from YoutubeDownload import YoutubeDownload
-from MyLogger import MyLogger
+from Logger import Logger
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QDir, QSettings 
-from PyQt5.QtWidgets import QApplication,QGridLayout, QVBoxLayout, QMainWindow, QFileDialog, QLabel, QWidget
 from PyQt5 import uic, QtCore
+from PyQt5.QtWidgets import QApplication,QGridLayout, QVBoxLayout, \
+                            QMainWindow, QFileDialog, QLabel, QWidget 
 
-# exec on exit
+
 def appExec(window):
     app = QApplication(sys.argv)
     app.exec_()
@@ -49,12 +50,11 @@ class MainWindow(QMainWindow):
 
         # buttons
         self.format_audio_Rbtn.toggled.connect(lambda: self.ydl_opts.update({
-                'format': 
-                    'm4a/bestaudio/best',
-                    'postprocessors': [{  # Extract audio using ffmpeg
-                    '   key': 'FFmpegExtractAudio',
+                'format': 'm4a/bestaudio/best',
+                'postprocessors': [{  
+                        'key': 'FFmpegExtractAudio',
                         'preferredcodec': 'm4a',
-                    }]
+                }]
         }))
 
         self.format_video_Rbtn.toggled.connect(
@@ -75,7 +75,6 @@ class MainWindow(QMainWindow):
         )
 
     def display_thumbnail(self, pixmap, title, duration):
-        # self.thumbnail_label.setVisible(False)
         self.thumbnail_label.setPixmap(pixmap)
         self.title_label.setText(f"Title: {title}")
         self.duration_label.setText(f"Duration: {duration}")
@@ -101,7 +100,7 @@ class MainWindow(QMainWindow):
         if self.check_button_flags():
 
             url = self.url_line_edit.text()
-            logger = MyLogger()
+            logger = Logger()
 
             logger.messageSignal.connect(self.textEdit.append)
             self.ydl_opts.update({'logger': logger})
@@ -158,7 +157,6 @@ class MainWindow(QMainWindow):
 
     def write_settings(self):
         settings = QSettings("./config/config.ini", QSettings.IniFormat)
-        #to boolean
         settings.setValue("audio_btn_state", self.format_audio_Rbtn.isChecked())
         settings.setValue("video_btn_state", self.format_video_Rbtn.isChecked())
         settings.setValue("yt_search_chkbx_state", self.yt_search_chkbx.isChecked())

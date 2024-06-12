@@ -62,21 +62,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QPushButton" name="start_download_button">
-        <property name="font">
-         <font>
-          <family>JetBrainsMonoNL NFM</family>
-          <pointsize>8</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Download</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
@@ -279,6 +264,21 @@
        <widget class="QProgressBar" name="progressBar">
         <property name="value">
          <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="start_download_button">
+        <property name="font">
+         <font>
+          <family>JetBrainsMonoNL NFM</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Download</string>
         </property>
        </widget>
       </item>
