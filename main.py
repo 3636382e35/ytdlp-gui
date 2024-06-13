@@ -109,7 +109,7 @@ class MainWindow(QMainWindow):
             self.thread.progress.connect(self.update_progress)
             self.thread.message.connect(self.display_message)
             self.thread.thumbnailFetched.connect(self.display_thumbnail)
-            self.thread.clear_console_log.connect(self.clear_console_log)
+            # self.thread.clear_console_log.connect(self.clear_console_log)
             self.thread.clear_thumbnail.connect(self.clear_thumbnail_label)
             self.thread.start()
 
@@ -124,15 +124,16 @@ class MainWindow(QMainWindow):
         self.adjustSize()
 
     def check_ydl_opts(self):
-        self.textEdit.append("\n".join("{}\t{}".format(k, v) for k, v in self.ydl_opts.items()))
+        self.textEdit.append("\n".join("{}\t{}".format(k, v) \
+            for k, v in self.ydl_opts.items()))
 
     def update_progress(self, value):
         self.progressBar.setValue(value)
         if self.progressBar.value == 100:
             self.progressBar.setValue(0)
 
-    def clear_console_log(self):
-        self.textEdit.clear()
+    # def clear_console_log(self):
+    #     self.textEdit.clear()
         
     def display_message(self, format_str, message):
         self.textEdit.append(format_str.format(message))
