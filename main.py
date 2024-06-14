@@ -9,7 +9,6 @@ from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import QApplication,QGridLayout, QVBoxLayout, \
                             QMainWindow, QFileDialog, QLabel, QWidget 
 
-
 def appExec(window):
     app = QApplication(sys.argv)
     app.exec_()
@@ -34,6 +33,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi('./ui/main_v2.ui', self)
 
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+
         with open('./config/config.toml', 'r') as f:
             config = toml.load(f)
 
@@ -48,6 +49,15 @@ class MainWindow(QMainWindow):
         self.validFormat = '<span style="color:#b8bb26;">{}</span>'
         self.normalFormat = '<span style="color:#;">{}</span>'
 
+        self.youtube_info_frame.setHidden(True)
+        self.audio_format_frame.setHidden(True)
+        self.video_format_frame.setHidden(True)
+        # self.check_formats()
+
+
+        # TODO: add formats on both audio and video
+
+
         # buttons
         self.format_audio_Rbtn.toggled.connect(lambda: self.ydl_opts.update({
                 'format': 'm4a/bestaudio/best',
@@ -56,6 +66,10 @@ class MainWindow(QMainWindow):
                         'preferredcodec': 'm4a',
                 }]
         }))
+
+        self.format_audio_Rbtn.toggled.connect(self.check_formats)
+        self.format_video_Rbtn.toggled.connect(self.check_formats)
+
 
         self.format_video_Rbtn.toggled.connect(
             lambda: self.ydl_opts.update({
@@ -73,6 +87,18 @@ class MainWindow(QMainWindow):
                 'yt_search': self.yt_search_chkbx.isChecked()
             })
         )
+
+    def check_formats(self):
+        if self.format_audio_Rbtn.isChecked():
+            self.audio_format_frame.setHidden(False)
+            self.video_format_frame.setHidden(True)
+        elif self.format_video_Rbtn.isChecked():
+            self.audio_format_frame.setHidden(True)
+            self.video_format_frame.setHidden(False)
+        else:
+            self.audio_format_frame.setHidden(True)
+            self.video_format_frame.setHidden(True)
+
 
     def display_thumbnail(self, pixmap, title, duration):
         self.thumbnail_label.setPixmap(pixmap)
@@ -96,7 +122,7 @@ class MainWindow(QMainWindow):
 
 
     def onEditingFinished(self):
-
+        self.textEdit.append(self.normalFormat.format("Downloading..."))
         if self.check_button_flags():
 
             url = self.url_line_edit.text()
@@ -121,7 +147,7 @@ class MainWindow(QMainWindow):
         self.thumbnail_label.clear()
         self.title_label.clear()
         self.duration_label.clear()
-        self.adjustSize()
+        self.youtube_info_frame.setHidden(True)
 
     def check_ydl_opts(self):
         self.textEdit.append("\n".join("{}\t{}".format(k, v) \

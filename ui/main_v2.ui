@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>547</width>
-    <height>468</height>
+    <height>573</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -18,9 +18,9 @@
   </property>
   <property name="font">
    <font>
-    <family>JetBrainsMonoNL NFM</family>
-    <weight>75</weight>
-    <bold>true</bold>
+    <family>IosevkaTerm Nerd Font Mono</family>
+    <weight>50</weight>
+    <bold>false</bold>
    </font>
   </property>
   <property name="windowTitle">
@@ -52,62 +52,13 @@
        <widget class="QLineEdit" name="url_line_edit">
         <property name="font">
          <font>
-          <family>JetBrainsMonoNL Nerd Font</family>
+          <family>IosevkaTerm Nerd Font Mono</family>
           <weight>50</weight>
           <bold>false</bold>
          </font>
         </property>
         <property name="placeholderText">
          <string>input complete URL or ID</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_7">
-      <property name="spacing">
-       <number>10</number>
-      </property>
-      <property name="leftMargin">
-       <number>10</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>10</number>
-      </property>
-      <property name="bottomMargin">
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="lineWidth">
-         <number>0</number>
-        </property>
-        <property name="text">
-         <string>Output Directory:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="file_path_label">
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="toolButton">
-        <property name="text">
-         <string>...</string>
         </property>
        </widget>
       </item>
@@ -128,7 +79,7 @@
         </property>
         <property name="font">
          <font>
-          <family>JetBrainsMonoNL Nerd Font Mono</family>
+          <family>IosevkaTerm Nerd Font Mono</family>
           <pointsize>9</pointsize>
           <weight>50</weight>
           <bold>false</bold>
@@ -136,6 +87,9 @@
         </property>
         <property name="acceptDrops">
          <bool>false</bool>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
         </property>
         <property name="readOnly">
          <bool>true</bool>
@@ -159,10 +113,10 @@
        <widget class="QPushButton" name="ydl_opts_btn">
         <property name="font">
          <font>
-          <family>JetBrainsMonoNL NFM</family>
-          <pointsize>8</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <family>IosevkaTerm Nerd Font Mono</family>
+          <pointsize>9</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -174,10 +128,10 @@
        <widget class="QPushButton" name="clear_edit_txt_btn">
         <property name="font">
          <font>
-          <family>JetBrainsMonoNL NFM</family>
-          <pointsize>8</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <family>IosevkaTerm Nerd Font Mono</family>
+          <pointsize>9</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -208,10 +162,10 @@
        <widget class="QRadioButton" name="format_video_Rbtn">
         <property name="font">
          <font>
-          <family>JetBrainsMonoNL NFM</family>
-          <pointsize>8</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <family>IosevkaTerm NFM</family>
+          <pointsize>9</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -223,10 +177,10 @@
        <widget class="QRadioButton" name="format_audio_Rbtn">
         <property name="font">
          <font>
-          <family>JetBrainsMonoNL NFM</family>
+          <family>IosevkaTerm NFM</family>
           <pointsize>8</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -236,8 +190,187 @@
       </item>
       <item>
        <widget class="QCheckBox" name="yt_search_chkbx">
+        <property name="font">
+         <font>
+          <family>IosevkaTerm Nerd Font Mono</family>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
          <string>ytsearch?</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QFrame" name="audio_format_frame">
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QRadioButton" name="format_video_btn_1">
+         <property name="font">
+          <font>
+           <family>IosevkaTerm Nerd Font Mono</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>vf_1</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="format_video_btn_2">
+         <property name="font">
+          <font>
+           <family>IosevkaTerm Nerd Font Mono</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>vf_2</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="video_format_frame">
+      <layout class="QHBoxLayout" name="horizontalLayout_9">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QRadioButton" name="format_audio_btn_1">
+         <property name="font">
+          <font>
+           <family>IosevkaTerm Nerd Font Mono</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>af_1</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="format_audio_btn_2">
+         <property name="font">
+          <font>
+           <family>IosevkaTerm Nerd Font Mono</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>af_2</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <family>IosevkaTerm Nerd Font Mono</family>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="lineWidth">
+         <number>0</number>
+        </property>
+        <property name="text">
+         <string>Output Directory:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="file_path_label">
+        <property name="font">
+         <font>
+          <family>IosevkaTerm Nerd Font Mono</family>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="toolButton">
+        <property name="font">
+         <font>
+          <family>IosevkaTerm Nerd Font Mono</family>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>...</string>
         </property>
        </widget>
       </item>
@@ -271,10 +404,10 @@
        <widget class="QPushButton" name="start_download_button">
         <property name="font">
          <font>
-          <family>JetBrainsMonoNL NFM</family>
-          <pointsize>8</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <family>IosevkaTerm Nerd Font Mono</family>
+          <pointsize>9</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -285,54 +418,83 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <property name="spacing">
-       <number>10</number>
-      </property>
-      <property name="leftMargin">
-       <number>10</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>10</number>
-      </property>
-      <property name="bottomMargin">
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="thumbnail_label">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="title_label">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="duration_label">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <widget class="QFrame" name="youtube_info_frame">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="thumbnail_label">
+         <property name="font">
+          <font>
+           <family>IosevkaTerm Nerd Font Mono</family>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="title_label">
+           <property name="font">
+            <font>
+             <family>IosevkaTerm Nerd Font Mono</family>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="duration_label">
+           <property name="font">
+            <font>
+             <family>IosevkaTerm Nerd Font Mono</family>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>

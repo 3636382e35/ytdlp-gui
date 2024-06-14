@@ -38,6 +38,7 @@ class YoutubeDownload(QThread):
                 progress = int(d['downloaded_bytes'] / d['total_bytes'] * 100)
                 self.progress.emit(progress)
 
+
             # if d['status'] == 'finished':
             #     self.message.emit(
             #         '<span style="color:#b8bb26;">{}</span>', 
@@ -49,10 +50,12 @@ class YoutubeDownload(QThread):
         
         with yt_dlp.YoutubeDL(self.ydl_opts,) as ydl:
             try:
+                self.main_window.youtube_info_frame.setHidden(False)
                 ydl.download([self.url])
                 # self.clear_console_log.emit()
-                self.message.emit('<span style="color:#b8bb26;">{}</span>',
-                                  "Download completed successfully."
+                self.message.emit(
+                    '<span style="color:#b8bb26;">{}</span>',
+                    "Download completed successfully."
                 )
                 self.main_window.progressBar.setValue(0)
                 self.clear_thumbnail.emit()  # Emit the signal when progress is 0
