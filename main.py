@@ -171,10 +171,23 @@ class MainWindow(QMainWindow):
         audio_btn_state = settings.value("audio_btn_state", False, type=bool)
         video_btn_state = settings.value("video_btn_state", False, type=bool)
         yt_search_chkbx_state = settings.value("yt_search_chkbx_state", False, type=bool)
+
+        format_audio_btn_1_state = settings.value("format_audio_btn_1_state", False, type=bool)
+        format_audio_btn_2_state = settings.value("format_audio_btn_2_state", False, type=bool)
+
+        format_video_btn_1_state = settings.value("format_video_btn_1_state", False, type=bool)
+        format_video_btn_2_state = settings.value("format_video_btn_2_state", False, type=bool)
+
         
         self.format_audio_Rbtn.setChecked(audio_btn_state)
         self.format_video_Rbtn.setChecked(video_btn_state)
         self.yt_search_chkbx.setChecked(yt_search_chkbx_state)
+
+        self.format_audio_btn_1.setChecked(format_audio_btn_1_state)
+        self.format_audio_btn_2.setChecked(format_audio_btn_2_state)
+
+        self.format_video_btn_1.setChecked(format_video_btn_1_state)
+        self.format_video_btn_2.setChecked(format_video_btn_2_state)
 
         pos = settings.value("pos", self.pos())
         size = settings.value("size", self.size())
@@ -187,6 +200,13 @@ class MainWindow(QMainWindow):
         settings.setValue("audio_btn_state", self.format_audio_Rbtn.isChecked())
         settings.setValue("video_btn_state", self.format_video_Rbtn.isChecked())
         settings.setValue("yt_search_chkbx_state", self.yt_search_chkbx.isChecked())
+
+        settings.setValue("format_audio_btn_1_state", self.format_audio_btn_1.isChecked())
+        settings.setValue("format_audio_btn_2_state", self.format_audio_btn_2.isChecked())
+
+        settings.setValue("format_video_btn_1_state", self.format_video_btn_1.isChecked())
+        settings.setValue("format_video_btn_2_state", self.format_video_btn_2.isChecked())
+
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
 

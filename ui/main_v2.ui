@@ -88,9 +88,6 @@
         <property name="acceptDrops">
          <bool>false</bool>
         </property>
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
         <property name="readOnly">
          <bool>true</bool>
         </property>
@@ -205,7 +202,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QFrame" name="audio_format_frame">
+     <widget class="QFrame" name="video_format_frame">
       <layout class="QHBoxLayout" name="horizontalLayout_8">
        <property name="spacing">
         <number>10</number>
@@ -256,7 +253,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="video_format_frame">
+     <widget class="QFrame" name="audio_format_frame">
       <layout class="QHBoxLayout" name="horizontalLayout_9">
        <property name="spacing">
         <number>10</number>
