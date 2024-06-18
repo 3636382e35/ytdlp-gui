@@ -1,5 +1,5 @@
 [output]
-directory = "/home/dario/Music"
+directory = "/home/noodlesoup/Music/asmr"
 
 [themes]
-directory = "./themes/gruvbox_theme.qss"
+directory = "./themes/one_dark.qss"

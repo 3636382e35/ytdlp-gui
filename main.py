@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 import sys, toml, os, urllib
 from YoutubeDownload import YoutubeDownload
@@ -7,7 +6,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QDir, QSettings 
 from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import QApplication,QGridLayout, QVBoxLayout, \
-                            QMainWindow, QFileDialog, QLabel, QWidget 
+                            QMainWindow, QFileDialog, QLabel, QWidget  \
 
 def appExec(window):
     app = QApplication(sys.argv)
@@ -34,6 +33,7 @@ class MainWindow(QMainWindow):
         uic.loadUi('./ui/main_v2.ui', self)
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle("Youtube Downloader")
 
         with open('./config/config.toml', 'r') as f:
             config = toml.load(f)
@@ -163,6 +163,7 @@ class MainWindow(QMainWindow):
         
     def display_message(self, format_str, message):
         self.textEdit.append(format_str.format(message))
+        # self.textEdit.verticalScrollBar().setValue(self.textEdit.verticalScrollBar().maximum())
 
 
     def read_settings(self):
@@ -178,6 +179,11 @@ class MainWindow(QMainWindow):
         format_video_btn_1_state = settings.value("format_video_btn_1_state", False, type=bool)
         format_video_btn_2_state = settings.value("format_video_btn_2_state", False, type=bool)
 
+        video_format_frame_state = settings.value("video_format_frame_state", False, type=bool)
+        audio_format_frame_state = settings.value("audio_format_frame_state", False, type=bool)
+
+        self.video_format_frame.setHidden(video_format_frame_state)
+        self.audio_format_frame.setHidden(audio_format_frame_state)
         
         self.format_audio_Rbtn.setChecked(audio_btn_state)
         self.format_video_Rbtn.setChecked(video_btn_state)
@@ -206,6 +212,9 @@ class MainWindow(QMainWindow):
 
         settings.setValue("format_video_btn_1_state", self.format_video_btn_1.isChecked())
         settings.setValue("format_video_btn_2_state", self.format_video_btn_2.isChecked())
+
+        settings.setValue("video_format_frame_state", self.video_format_frame.isChecked())
+        settings.setValue("audio_format_frame_state", self.audio_format_frame_state.isChecked())
 
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
