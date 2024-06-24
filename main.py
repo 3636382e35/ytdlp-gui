@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 import sys, toml, os, urllib
 from YoutubeDownload import YoutubeDownload
@@ -7,6 +8,7 @@ from PyQt5.QtCore import QDir, QSettings
 from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import QApplication,QGridLayout, QVBoxLayout, \
                             QMainWindow, QFileDialog, QLabel, QWidget  \
+                            
 
 def appExec(window):
     app = QApplication(sys.argv)
@@ -67,14 +69,34 @@ class MainWindow(QMainWindow):
                 }]
         }))
 
-        self.format_audio_Rbtn.toggled.connect(self.check_formats)
-        self.format_video_Rbtn.toggled.connect(self.check_formats)
-
-
         self.format_video_Rbtn.toggled.connect(
             lambda: self.ydl_opts.update({
                 'format': 'bestvideo/best'})
         )
+
+        self.format_audio_btn_1.toggled.connect(
+            lambda: self.ydl_opts.update({
+                'format': 'mp3/bestaudio/best'})
+        )
+
+        self.format_audio_btn_2.toggled.connect(
+            lambda: self.ydl_opts.update({
+                'format': 'm4a/bestaudio/best'})
+        )
+
+        self.format_video_btn_1.toggled.connect(
+            lambda: self.ydl_opts.update({
+                'format': 'mp4/bestvideo/best'})
+        )
+
+        self.format_video_btn_2.toggled.connect(
+            lambda: self.ydl_opts.update({
+                'format': 'webm/bestvideo/best'})
+        )
+
+        self.format_audio_Rbtn.toggled.connect(self.check_formats)
+        self.format_video_Rbtn.toggled.connect(self.check_formats)
+
 
         self.clear_edit_txt_btn.clicked.connect(self.textEdit.clear)
         self.ydl_opts_btn.clicked.connect(self.check_ydl_opts)
@@ -163,7 +185,7 @@ class MainWindow(QMainWindow):
         
     def display_message(self, format_str, message):
         self.textEdit.append(format_str.format(message))
-        # self.textEdit.verticalScrollBar().setValue(self.textEdit.verticalScrollBar().maximum())
+        self.textEdit.verticalScrollBar().setValue(self.textEdit.verticalScrollBar().maximum())
 
 
     def read_settings(self):

@@ -230,7 +230,7 @@
           </font>
          </property>
          <property name="text">
-          <string>vf_1</string>
+          <string>mp4</string>
          </property>
         </widget>
        </item>
@@ -245,7 +245,7 @@
           </font>
          </property>
          <property name="text">
-          <string>vf_2</string>
+          <string>webm</string>
          </property>
         </widget>
        </item>
@@ -281,7 +281,7 @@
           </font>
          </property>
          <property name="text">
-          <string>af_1</string>
+          <string>mp3</string>
          </property>
         </widget>
        </item>
@@ -296,7 +296,7 @@
           </font>
          </property>
          <property name="text">
-          <string>af_2</string>
+          <string>m4a</string>
          </property>
         </widget>
        </item>
