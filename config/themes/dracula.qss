@@ -1,37 +1,3 @@
-/* Dracula Color Scheme */
-/* Dark Colors */
-@dark0_hard: #1d2021;
-@dark0: #282a36;
-@dark0_soft: #44475a;
-@dark1: #44475a;
-@dark2: #6272a4;
-@dark3: #6272a4;
-@dark4: #6272a4;
-/* Light Colors */
-@light0_hard: #f8f8f2;
-@light0: #f8f8f2;
-@light0_soft: #f8f8f2;
-@light1: #f8f8f2;
-@light2: #f8f8f2;
-@light3: #f8f8f2;
-@light4: #f8f8f2;
-/* Bright Colors */
-@bright_red: #ff5555;
-@bright_green: #50fa7b;
-@bright_yellow: #f1fa8c;
-@bright_blue: #8be9fd;
-@bright_purple: #bd93f9;
-@bright_aqua: #8be9fd;
-@bright_orange: #ffb86c;
-/* Neutral Colors */
-@neutral_red: #ff5555;
-@neutral_green: #50fa7b;
-@neutral_yellow: #f1fa8c;
-@neutral_blue: #8be9fd;
-@neutral_purple: #bd93f9;
-@neutral_aqua: #8be9fd;
-@neutral_orange: #ffb86c;
-
 /* Main Window */
 QWidget {
   background-color: #282a36;

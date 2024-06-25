@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>547</width>
-    <height>573</height>
+    <width>369</width>
+    <height>427</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -175,7 +175,7 @@
         <property name="font">
          <font>
           <family>IosevkaTerm NFM</family>
-          <pointsize>8</pointsize>
+          <pointsize>9</pointsize>
           <weight>50</weight>
           <bold>false</bold>
          </font>
@@ -190,6 +190,7 @@
         <property name="font">
          <font>
           <family>IosevkaTerm Nerd Font Mono</family>
+          <pointsize>9</pointsize>
           <weight>50</weight>
           <bold>false</bold>
          </font>
@@ -254,7 +255,7 @@
     </item>
     <item>
      <widget class="QFrame" name="audio_format_frame">
-      <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,0">
        <property name="spacing">
         <number>10</number>
        </property>
@@ -495,6 +496,33 @@
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>369</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuThemes">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionThemes"/>
+   </widget>
+   <addaction name="menuThemes"/>
+  </widget>
+  <action name="action1">
+   <property name="text">
+    <string>1</string>
+   </property>
+  </action>
+  <action name="actionThemes">
+   <property name="text">
+    <string>Colorscheme</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

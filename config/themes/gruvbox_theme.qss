@@ -32,8 +32,6 @@
 @neutral_aqua: #689d6a;
 @neutral_orange: #d65d0e;
 
-
-
 /* Main Window */
 QWidget {
   background-color: #ebdbb2;
@@ -62,6 +60,13 @@ QPushButton:hover, QToolButton:hover {
 QPushButton:pressed, QToolButton:pressed {
               background-color: #7c6f64;
             }
+
+
+QLabel#title_label, QLabel#duration_label {
+ color: #8ec07c 
+}
+
+
 
 /* TextEdit */
 
@@ -212,6 +217,7 @@ QProgressBar {
     background-color: #282828;
     border-radius: 2px;
     color: #ebdbb2;
+    font-weight: bold; 
     text-align: center;
 }
 
@@ -256,22 +262,24 @@ QCheckBox::indicator, QRadioButton::indicator {
 }
 
 QCheckBox::indicator:checked, QRadioButton::indicator:checked {
-    background-color: #b8bb26;
+    /* background-color: #b8bb26; */
+    background-color: #cc241d; 
 }
 
 QCheckBox::indicator:unchecked, QRadioButton::indicator:unchecked {
     background-color: #504945;
 }
 
+
 QFileDialog {
   background-color : #1d2021;
   color : #1d2021;
-  border: 1px solid #504945;
+  /* border: 1px solid #504945; */
 }
 
 
 QTableView , QListView, QColumnView, QTableWidget, QTreeWidget, QListWidget , QScrollArea {
   background-color: #282828;
   color : #ebdbb2;
-  border: 1px solid #504945;
+  /* border: 1px solid #504945; */
 }

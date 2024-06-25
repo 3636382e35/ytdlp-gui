@@ -37,6 +37,11 @@ class MainWindow(QMainWindow):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Youtube Downloader")
 
+        self.youtube_info_frame.setHidden(True)
+        self.audio_format_frame.setHidden(True)
+        self.video_format_frame.setHidden(True)
+
+        self.yt_search_chkbx.setHidden(True)
         with open('./config/config.toml', 'r') as f:
             config = toml.load(f)
 
@@ -50,14 +55,6 @@ class MainWindow(QMainWindow):
         self.warningFormat = '<span style="color:#fabd2f;">{}</span>'
         self.validFormat = '<span style="color:#b8bb26;">{}</span>'
         self.normalFormat = '<span style="color:#;">{}</span>'
-
-        self.youtube_info_frame.setHidden(True)
-        self.audio_format_frame.setHidden(True)
-        self.video_format_frame.setHidden(True)
-        # self.check_formats()
-
-
-        # TODO: add formats on both audio and video
 
 
         # buttons
@@ -94,6 +91,8 @@ class MainWindow(QMainWindow):
                 'format': 'webm/bestvideo/best'})
         )
 
+        self.actionThemes.triggered.connect(self.select_colorscheme) 
+
         self.format_audio_Rbtn.toggled.connect(self.check_formats)
         self.format_video_Rbtn.toggled.connect(self.check_formats)
 
@@ -114,12 +113,19 @@ class MainWindow(QMainWindow):
         if self.format_audio_Rbtn.isChecked():
             self.audio_format_frame.setHidden(False)
             self.video_format_frame.setHidden(True)
+
         elif self.format_video_Rbtn.isChecked():
             self.audio_format_frame.setHidden(True)
             self.video_format_frame.setHidden(False)
         else:
             self.audio_format_frame.setHidden(True)
             self.video_format_frame.setHidden(True)
+
+            # self.audio_format_btn_1.setChecked(False)
+            # self.audio_format_btn_2.setChecked(False)
+
+            # self.video_format_btn_1.setChecked(False)
+            # self.video_format_btn_2.setChecked(False)
 
 
     def display_thumbnail(self, pixmap, title, duration):
@@ -138,6 +144,20 @@ class MainWindow(QMainWindow):
             self.file_path_label.setText(file_path)
             self.ydl_opts.update({'outtmpl': file_path + '/%(title)s.%(ext)s'})
 
+    # TODO: 
+    def select_colorscheme(self):
+        self.file_dialog = QFileDialog(self)
+        file_path = self.file_dialog.getOpenFileName(self, "Select QSS", "./config/themes/", "QSS Files (*.qss)")[0]
+        if file_path:  # Check if a file path was selected
+            with open(file_path, 'r') as file:
+                qss = file.read()
+                app.setStyleSheet(qss)
+
+        with open('./config/config.toml', 'r') as f:
+            config = toml.load(f)
+        config['themes']['directory'] = file_path.split('/')[-1]
+        with open('./config/config.toml', 'w') as f:
+            toml.dump(config, f)
 
     def check_button_flags(self):
         return self.format_audio_Rbtn.isChecked() or self.format_video_Rbtn.isChecked()
@@ -190,33 +210,25 @@ class MainWindow(QMainWindow):
 
     def read_settings(self):
         settings = QSettings("./config/config.ini", QSettings.IniFormat)
-
         audio_btn_state = settings.value("audio_btn_state", False, type=bool)
         video_btn_state = settings.value("video_btn_state", False, type=bool)
         yt_search_chkbx_state = settings.value("yt_search_chkbx_state", False, type=bool)
-
         format_audio_btn_1_state = settings.value("format_audio_btn_1_state", False, type=bool)
         format_audio_btn_2_state = settings.value("format_audio_btn_2_state", False, type=bool)
-
         format_video_btn_1_state = settings.value("format_video_btn_1_state", False, type=bool)
         format_video_btn_2_state = settings.value("format_video_btn_2_state", False, type=bool)
-
         video_format_frame_state = settings.value("video_format_frame_state", False, type=bool)
         audio_format_frame_state = settings.value("audio_format_frame_state", False, type=bool)
 
         self.video_format_frame.setHidden(video_format_frame_state)
         self.audio_format_frame.setHidden(audio_format_frame_state)
-        
         self.format_audio_Rbtn.setChecked(audio_btn_state)
         self.format_video_Rbtn.setChecked(video_btn_state)
         self.yt_search_chkbx.setChecked(yt_search_chkbx_state)
-
         self.format_audio_btn_1.setChecked(format_audio_btn_1_state)
         self.format_audio_btn_2.setChecked(format_audio_btn_2_state)
-
         self.format_video_btn_1.setChecked(format_video_btn_1_state)
         self.format_video_btn_2.setChecked(format_video_btn_2_state)
-
         pos = settings.value("pos", self.pos())
         size = settings.value("size", self.size())
         self.move(pos)
@@ -228,16 +240,12 @@ class MainWindow(QMainWindow):
         settings.setValue("audio_btn_state", self.format_audio_Rbtn.isChecked())
         settings.setValue("video_btn_state", self.format_video_Rbtn.isChecked())
         settings.setValue("yt_search_chkbx_state", self.yt_search_chkbx.isChecked())
-
         settings.setValue("format_audio_btn_1_state", self.format_audio_btn_1.isChecked())
         settings.setValue("format_audio_btn_2_state", self.format_audio_btn_2.isChecked())
-
         settings.setValue("format_video_btn_1_state", self.format_video_btn_1.isChecked())
         settings.setValue("format_video_btn_2_state", self.format_video_btn_2.isChecked())
-
         settings.setValue("video_format_frame_state", self.video_format_frame.isChecked())
         settings.setValue("audio_format_frame_state", self.audio_format_frame_state.isChecked())
-
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
 
@@ -246,7 +254,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     config = toml.load('./config/config.toml')
-    file = open('./config/' + config['themes']['directory'], 'r')
+    file = open('./config/themes/' + config['themes']['directory'], 'r')
     with file:
         qss = file.read()
         app.setStyleSheet(qss)
