@@ -152,10 +152,10 @@ class MainWindow(QMainWindow):
             with open(file_path, 'r') as file:
                 qss = file.read()
                 app.setStyleSheet(qss)
-
         with open('./config/config.toml', 'r') as f:
             config = toml.load(f)
-        config['themes']['directory'] = file_path.split('/')[-1]
+        print(file_path.split('/')[-1])
+        config['themes']['directory'] = file_path
         with open('./config/config.toml', 'w') as f:
             toml.dump(config, f)
 
@@ -246,6 +246,7 @@ class MainWindow(QMainWindow):
         settings.setValue("format_video_btn_2_state", self.format_video_btn_2.isChecked())
         settings.setValue("video_format_frame_state", self.video_format_frame.isChecked())
         settings.setValue("audio_format_frame_state", self.audio_format_frame_state.isChecked())
+
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
 
@@ -254,7 +255,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     config = toml.load('./config/config.toml')
-    file = open('./config/themes/' + config['themes']['directory'], 'r')
+    file = open(config['themes']['directory'], 'r')
     with file:
         qss = file.read()
         app.setStyleSheet(qss)

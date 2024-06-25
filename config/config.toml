@@ -2,4 +2,4 @@
 directory = "/home/noodlesoup/Music"
 
 [themes]
-directory = ""
+directory = "/home/noodlesoup/Stuffs/python/ytdlp-gui/config/themes/gruvbox_theme.qss"
